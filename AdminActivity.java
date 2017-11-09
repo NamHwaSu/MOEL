@@ -89,10 +89,12 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             EditText edit_buildingName = (EditText) dialogView.findViewById(R.id.dialog_buildingName);
+                            EditText edit_buildingNo = (EditText) dialogView.findViewById(R.id.dialog_buildingNo);
                             EditText edit_floor = (EditText) dialogView.findViewById(R.id.dialog_floor);
                             EditText edit_elevator = (EditText) dialogView.findViewById(R.id.dialog_elevator);
 
                             String buildingName = edit_buildingName.getText().toString();
+                            String buildingNo = edit_buildingNo.getText().toString();
                             String floor = edit_floor.getText().toString();
                             String numElevator = edit_elevator.getText().toString();
 
