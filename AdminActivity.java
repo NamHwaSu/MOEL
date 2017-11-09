@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    //숮ㅇ
+    //Test123213
     private ListView mListView;
     //데이터 리스트
     private ArrayList<String> mArrayList;
