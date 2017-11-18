@@ -1,4 +1,4 @@
-package com.example.imyhs.moel;
+package com.example.imyhs.moel.Request;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class RegisterRequest extends StringRequest{
 
-    final static private String URL = "웹서버주소PHP/UserRegister.php";
+    final static private String URL = "http://52.79.39.200/UserRegister.php";
     private Map<String, String> parameters;
 
     public RegisterRequest(String userID, String userPassword, String userGender, String userMajor, String userEmail, Response.Listener<String> listener){
@@ -24,7 +24,6 @@ public class RegisterRequest extends StringRequest{
         parameters.put("userMajor", userMajor);
         parameters.put("userEmail", userEmail);
     }
-
 
     @Override
     public Map<String, String> getParams(){

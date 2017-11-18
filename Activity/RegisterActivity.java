@@ -1,9 +1,8 @@
-package com.example.imyhs.moel;
+package com.example.imyhs.moel.Activity;
 
-import android.support.annotation.IdRes;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +14,9 @@ import android.widget.Spinner;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.imyhs.moel.R;
+import com.example.imyhs.moel.Request.RegisterRequest;
+import com.example.imyhs.moel.Request.ValidateRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private boolean validate = false;
 
+    //회원가입 중복체크
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,8 @@ public class RegisterActivity extends AppCompatActivity {
         genderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                RadioButton genderButton = (RadioButton) findViewById(checkedId);
+            public void onCheckedChanged(RadioGroup group, int i) {
+                RadioButton genderButton = (RadioButton) findViewById(i);
                 userGender = genderButton.getText().toString();
             }
         });
@@ -61,8 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
         final Button validateButton = (Button) findViewById(R.id.validateButton);
         validateButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(final View v) {
-                String  userID = idText.getText().toString();
+            public void onClick(View v) {
+                String userID = idText.getText().toString();
                 if(validate)
                 {
                     return;
@@ -84,6 +87,11 @@ public class RegisterActivity extends AppCompatActivity {
                         {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
+
+                            //Log.i("",success);
+                            System.out.println(success);
+                            System.out.println("@@@@@@@@@@@@@@@@@@2");
+
                             if(success){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                 dialog = builder.setMessage("사용할 수 있는 아이디입니다.")
@@ -92,7 +100,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 dialog.show();
                                 idText.setEnabled(false);
                                 validate = true;
-
                                 idText.setBackgroundColor(getResources().getColor(R.color.colorGray));
                                 validateButton.setBackgroundColor(getResources().getColor(R.color.colorGray));
                             }
@@ -103,7 +110,9 @@ public class RegisterActivity extends AppCompatActivity {
                                         .create();
                                 dialog.show();
                             }
-                        } catch (JSONException e) {
+                        }
+                        catch (JSONException e)
+                        {
                             e.printStackTrace();
                         }
                     }

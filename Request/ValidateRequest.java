@@ -1,4 +1,4 @@
-package com.example.imyhs.moel;
+package com.example.imyhs.moel.Request;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ValidateRequest extends StringRequest{
 
-    final static private String URL = "웹서버주소PHP/UserValidate.php";
+    final static private String URL = "http://52.79.39.200/UserValidate.php";
     private Map<String, String> parameters;
 
     public ValidateRequest(String userID, Response.Listener<String> listener){

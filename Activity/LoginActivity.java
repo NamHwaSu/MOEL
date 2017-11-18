@@ -1,9 +1,9 @@
-package com.example.imyhs.moel;
+package com.example.imyhs.moel.Activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.imyhs.moel.Activity.MainActivity;
+import com.example.imyhs.moel.R;
+import com.example.imyhs.moel.Activity.RegisterActivity;
+import com.example.imyhs.moel.Request.LoginRequest;
 
 import org.json.JSONObject;
 
@@ -42,7 +46,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String userID = idText.getText().toString();
-                String userPassword = passwordText.getText().toString();
+                final String userPassword = passwordText.getText().toString();
+
 
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
 
@@ -50,7 +55,10 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try
                         {
+
                             JSONObject jsonResponse = new JSONObject(response);
+                            System.out.println(response);
+                            System.out.println(jsonResponse);
                             boolean success = jsonResponse.getBoolean("success");
                             if(success){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

@@ -1,4 +1,4 @@
-package com.example.imyhs.moel;
+package com.example.imyhs.moel.Activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,13 +8,25 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+import com.example.imyhs.moel.Adapter.BuildingListAdapter;
+import com.example.imyhs.moel.Building;
+import com.example.imyhs.moel.R;
+import com.example.imyhs.moel.Request.AdminRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by imyhs on 2017-11-02.
@@ -22,27 +34,29 @@ import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private ListView mListView;
+    private ListView buildingListView;
     //데이터 리스트
-    private ArrayList<String> mArrayList;
+    private List<Building> buildingList;
     //리스트뷰에 사용되는 ArrayAdapter
-    private ArrayAdapter<String> mArrayAdapter;
+    private BuildingListAdapter mArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        mListView = (ListView) findViewById(R.id.List_building);
+        buildingListView = (ListView) findViewById(R.id.List_building);
 
         //ArrayList,ArrayListAdapter생성
-        mArrayList = new ArrayList<String>();
-        mArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
+        buildingList = new ArrayList<Building>();
+        buildingList.add(new Building("팔달관","1","10","2"));
+        buildingList.add(new Building("성호관","2","5","3"));
 
+        mArrayAdapter = new BuildingListAdapter(getApplicationContext(), buildingList);
         //어댑터를 리스트뷰에 세팅
-        mListView.setAdapter(mArrayAdapter);
-        //리스트뷰에 아이템클릭리스너 등록록
-        mListView.setOnItemClickListener(this);
+        buildingListView.setAdapter(mArrayAdapter);
+        //리스트뷰에 아이템클릭리스너 등록
+        buildingListView.setOnItemClickListener(this);
 
         findViewById(R.id.Button_admin).setOnClickListener(mClickListener);
     }
@@ -51,20 +65,20 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     protected  void onResume(){
         super.onResume();
-        mArrayList.clear();
+        buildingList.clear();
     }*/
 
     public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
 
         // String data = (String)parent.getItemAtPosition(position);
-        String data = mArrayList.get(position);
+        Building data = buildingList.get(position);
 
         String message = "해당 데이터를 삭제하시겠습니까?";
 
         DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mArrayList.remove(position);
+                buildingList.remove(position);
                 mArrayAdapter.notifyDataSetChanged();
             }
         };
@@ -89,16 +103,36 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             EditText edit_buildingName = (EditText) dialogView.findViewById(R.id.dialog_buildingName);
+                            EditText edit_buildingNo = (EditText) dialogView.findViewById(R.id.dialog_buildingNo);
                             EditText edit_floor = (EditText) dialogView.findViewById(R.id.dialog_floor);
                             EditText edit_elevator = (EditText) dialogView.findViewById(R.id.dialog_elevator);
 
                             String buildingName = edit_buildingName.getText().toString();
+                            String buildingNo = edit_buildingNo.getText().toString();
                             String floor = edit_floor.getText().toString();
                             String numElevator = edit_elevator.getText().toString();
 
-                            mArrayList.add(buildingName);
-                            mArrayAdapter.notifyDataSetChanged();
+                            buildingList.add(new Building(buildingName,buildingNo,floor,numElevator));
 
+                            Response.Listener<String> responseListener = new Response.Listener<String>(){
+
+                                @Override
+                                public void onResponse(String response) {
+                                    try
+                                    {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        boolean success = jsonResponse.getBoolean("success");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                            AdminRequest adminRequest = new AdminRequest(buildingName, floor, numElevator, responseListener);
+                            RequestQueue requestQueue = Volley.newRequestQueue(AdminActivity.this);
+                            requestQueue.add(adminRequest);
+
+                            mArrayAdapter.notifyDataSetChanged();
                             Toast.makeText(AdminActivity.this, "새로운 건물을 추가했습니다", Toast.LENGTH_SHORT).show();
                         }
                     });
